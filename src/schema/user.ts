@@ -23,3 +23,12 @@ export const registerSchema = z
     path: ["confirmPassword"],
     message: "passwords do not match",
   })
+
+export const loginSchema = z.object({
+  email: z
+    .string({ required_error: "email is required" })
+    .email({ message: "must be a valid email" }),
+  password: z
+    .string({ required_error: "password is required" })
+    .min(1, { message: "password is required" }),
+})
