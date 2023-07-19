@@ -5,6 +5,15 @@ import { getUser } from "../utils"
 
 const ownerRouter = Router()
 
+ownerRouter.get("/house/all", async (req, res) => {
+  const user = await getUser(req.headers.authorization as string)
+  const houses = await House.find({
+    owner: user?._id,
+  })
+
+  res.json(houses)
+})
+
 ownerRouter.post("/house/add", async (req, res, next) => {
   const data = req.body
   let houseData
