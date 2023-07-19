@@ -2,8 +2,27 @@ import { Router } from "express"
 import { houseCreateSchema } from "../schema/house"
 import { House } from "../models/House"
 import { getUser } from "../utils"
+import { Booking } from "../models/Bookings"
 
 const ownerRouter = Router()
+
+ownerRouter.get("/bookings", async (req, res) => {
+  const user = await getUser(req.headers.authorization as string)
+  const houses = await House.find({
+    owner: user?._id,
+  })
+
+  const bookings = await Booking.find({
+    house: { $in: houses.map((house) => house._id) },
+  }).populate(["renter"])
+
+  res.json({ status: "success", data: bookings })
+})
+
+ownerRouter.delete("/bookings/:bookId", async (req, res) => {
+  await Booking.findByIdAndDelete(req.params.bookId)
+  res.json({ status: "success", message: "booking deleted" })
+})
 
 ownerRouter.get("/house/all", async (req, res) => {
   const user = await getUser(req.headers.authorization as string)
