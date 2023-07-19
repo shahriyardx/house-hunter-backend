@@ -19,6 +19,20 @@ ownerRouter.get("/house/:id", async (req, res) => {
   res.json({ status: house ? "success" : "error", message: "", data: house })
 })
 
+ownerRouter.delete("/house/:id", async (req, res) => {
+  const house = await House.findById(req.params.id)
+  if (!house) {
+    return res.json({
+      status: "error",
+      message: "house not found",
+      data: null,
+    })
+  }
+
+  await House.findByIdAndDelete(req.params.id)
+  res.json({ status: "success", message: "house deletes", data: house })
+})
+
 ownerRouter.patch("/house/edit/:id", async (req, res, next) => {
   const data = req.body
   let houseData
